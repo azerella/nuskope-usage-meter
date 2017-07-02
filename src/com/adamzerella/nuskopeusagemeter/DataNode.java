@@ -44,21 +44,21 @@ public class DataNode {
 
 		this.webPage = "http://api.nuskope.com.au/usage/?Token=";
 		this.lastResetDate = new GregorianCalendar();
-
 		this.token = token;	
-		this.webPage = this.token + this.webPage; //append token to end of URL
+		this.webPage = this.webPage + this.token; //append token to end of URL
 
 		try {
-			nuskopeURL = new URL(webPage);
+			this.nuskopeURL = new URL(webPage);
 			Scanner input = new Scanner(nuskopeURL.openStream());
 
 			while (input.hasNextLine()){
 				URLStream += input.nextLine();
 			}
+			
 			instansiateData(URLStream);
 			input.close();
 		} catch (Exception ex){
-			System.out.println("Invalid Token " + "'" + this.getToken() + "' ?"+ " or URL not reciving input stream...");
+			System.err.println(ex.getMessage());
 		} 
 
 		//printNode(); // <--- DEBUGGING 
@@ -169,4 +169,5 @@ public class DataNode {
 		System.out.println("Upload Quota Used: " +"\t"+ uploadsToDate + "  GB");
 		System.out.println("=======================================" + "\n");
 	}
+	
 }

@@ -4,10 +4,10 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class UITests {
+public class DataNodeTests {
 
 	@Test
-	public void invalidSize() {
+	public void invalidToken() {
 		fail("Not yet implemented");
 	}
 

@@ -64,4 +64,5 @@ public class AboutDialog extends JDialog implements ActionListener{
 			this.dispose();
 		}
 	}
+	
 }

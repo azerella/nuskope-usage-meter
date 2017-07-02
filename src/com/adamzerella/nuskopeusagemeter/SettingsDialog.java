@@ -30,7 +30,6 @@ public class SettingsDialog  extends JDialog implements ActionListener{
 	 * Action Listener for all action events in this class
 	 * @param e - The ActionEvent
 	 */
-	public void actionPerformed(ActionEvent e) {
-
-	}
+	public void actionPerformed(ActionEvent e) {}
+	
 }

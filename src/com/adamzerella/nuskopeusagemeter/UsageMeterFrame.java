@@ -17,8 +17,6 @@ import javax.swing.border.TitledBorder;
 
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 
@@ -68,42 +66,44 @@ public class UsageMeterFrame extends JFrame implements ActionListener {
 	 */
 	public UsageMeterFrame(int width, int height) {
 		this.currentDate = new GregorianCalendar();
-		this.propFile = new PropertiesFile();
+		this.propFile = new PropertiesFile(this);
 		this.currentDayInInt = currentDate.get(Calendar.DAY_OF_MONTH);
 
 		//Shutdown thread that fires on shutdown, used for storing prop data
 		Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook"){ 
 			public void run(){
 				System.out.println("\n" + "[SHUTDOWN HOOK]");	
-				propFile.updateX();
-				propFile.updateY();
+				propFile.writeXPosition();
+				propFile.writeYPosition();
 
 				if (!topMenu.getUserInput().isEmpty()){
-					propFile.updateToken(topMenu.getUserInput());
+					propFile.writeToken(topMenu.getUserInput());
 				} else{
-					propFile.updateToken("null"); //Filler text, required; related to bug 
+					propFile.writeToken("null"); //Filler text, required; related to bug 
 				}
 				System.out.println(""
-						+ "xcord: "  + "\t" + propFile.getProperty("xcord") + "\n"  
-						+ "ycord: "  + "\t" + propFile.getProperty("ycord") + "\n"
+						+ "x_pos: "  + "\t" + propFile.getProperty("x_pos") + "\n"  
+						+ "y_pos: "  + "\t" + propFile.getProperty("y_pos") + "\n"
 						+ "token: "  + "\t" + propFile.getProperty("token") + "\n"
 						);
 			}
 		});
 
+		setLookAndFeel();
+
+		createHeader();
+		createContent();
+		createFooter();	
+		
 		//Load or create properties file
 		this.topMenu = new TopMenuBar(this);	
 		this.setSize(width, height);
-		this.setTitle("NuSkope Usage Meter");
+		this.setTitle("Nuskope Usage Meter");
 		this.setResizable(false);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setIconImage(new ImageIcon("resources/icon16.png").getImage());
+		this.setIconImage(new ImageIcon("src/resources/icon16.png").getImage());
 
 		//Load properties file
-		System.out.println("propFile Token: " + propFile.getProperty("token"));
-		System.out.println("X : " + propFile.getProperty("xcord"));
-		System.out.println("Y : " + propFile.getProperty("ycord") +"\n");
-
 		//Check if config file has a token field
 		if (!propFile.getProperty("token").isEmpty()){
 			this.node = new DataNode(propFile.getProperty("token"));
@@ -114,7 +114,8 @@ public class UsageMeterFrame extends JFrame implements ActionListener {
 				topMenu.getTokenMenuItem().setEnabled(false);
 			}
 			//Check if user input has been entered
-		} else if (!topMenu.getUserInput().isEmpty()){
+		} 
+		else if (!topMenu.getUserInput().isEmpty()){
 			this.node = new DataNode(topMenu.getUserInput());
 			updateGUI(this.node);
 
@@ -126,14 +127,12 @@ public class UsageMeterFrame extends JFrame implements ActionListener {
 		}
 
 		//Set Location and token
-		if (!propFile.getProperty("xcord").equals(null) && !propFile.getProperty("ycord").equals(null)){
-			this.setLocation(Integer.parseInt(this.propFile.getProperty("xcord")),Integer.parseInt(this.propFile.getProperty("ycord")));
+		if (!propFile.getProperty("x_pos").equals(null) && !propFile.getProperty("y_pos").equals(null)){
+			this.setLocation(
+					Integer.parseInt(this.propFile.getProperty("x_pos")),
+					Integer.parseInt(this.propFile.getProperty("y_pos")));
 		}
-		setLookAndFeel();
-		createHeader();
-		createContent();
-		createFooter();		
-
+		
 		this.setVisible(true);	
 	}
 
@@ -190,19 +189,16 @@ public class UsageMeterFrame extends JFrame implements ActionListener {
 	}	
 
 	/**
-	 * 
+	 * Modify the progress bar colours according to their respect value.
 	 */
 	private void updateUsageColour() {
 		if (pgbUsageRemain.getValue() >= 30 ){
 			pgbUsageRemain.setForeground(new Color(255,215,0));
-		}	
-		if (pgbUsageRemain.getValue() >= 50 ){
+		} else if (pgbUsageRemain.getValue() >= 50 ){
 			pgbUsageRemain.setForeground(new Color(255,165,0));
-		}	
-		if (pgbUsageRemain.getValue() >= 70 ){
+		} else if  (pgbUsageRemain.getValue() >= 70 ){
 			pgbUsageRemain.setForeground(new Color(255,140,0));
-		}	
-		if (pgbUsageRemain.getValue() >= 80 ){
+		} else if  (pgbUsageRemain.getValue() >= 80 ){
 			pgbUsageRemain.setForeground(new Color(255,69,0));
 		}	
 	}
@@ -210,20 +206,13 @@ public class UsageMeterFrame extends JFrame implements ActionListener {
 	/**
 	 * Method to set the "theme" of the JSwing API
 	 */
-	private void setLookAndFeel() {
+	private void setLookAndFeel() {	
+		// Set System L&F for the relevant systems
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); //"Metal theme"
-			System.out.println("Theme Style: " +UIManager.getLookAndFeel().getName());
-			//UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName()); //"GTK theme"
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}	
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}  catch (Exception ex) {
+			System.err.println("UI L&F EXCEPTION: " + ex.getMessage());
+		}
 	}
 
 	/**
@@ -426,7 +415,7 @@ public class UsageMeterFrame extends JFrame implements ActionListener {
 	 * @throws IllegalArgumentException 
 	 */
 	public int planQuotaDivider(int planQuotaGB, float downloadsToDate) {
-		if (planQuotaGB < 10) throw new IllegalArgumentException("Plan quota is too small! Invalid token?");
+		//if (planQuotaGB < 10) throw new IllegalArgumentException("Plan quota is too small! Invalid token?");
 
 		return ( (int) ( (downloadsToDate / planQuotaGB) * 100 ) );
 	}	
