@@ -4,15 +4,16 @@
 [![GitHub license](https://img.shields.io/github/license/adamzerella/NuskopeUsageMeter.svg)](https://github.com/adamzerella/adamzerella/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/adamzerella/NuskopeUsageMeter.svg)](https://github.com/adamzerella/adamzerella/issues)
 
-> <strong>NOTE: THIS IS A DEPRECIATED AND UNMAINTAINED PROJECT!  IT HAS ONLY HAD THE DOCUMENTATION AND PROJECT STRUCTURE REFACTORED SINCE INCEPTION.</strong>
+> <strong>NOTE: THIS IS A DEPRECIATED AND UNMAINTAINED PROJECT! &nbsp; IT HAS ONLY HAD THE DOCUMENTATION AND PROJECT STRUCTURE REFACTORED SINCE INCEPTION (~2016)</strong>
 
-> Internet usage meter for the ISP provider Nuskope, inspired by the ISP Internode's Monthly Usage Meter (MUM) tool.
+> Internet usage meter GUI for the ISP provider Nuskope, inspired by the ISP Internode's Monthly Usage Meter (MUM) tool.
 
 
 # Prerequisites
 
-- [openjdk >= 1.8](http://openjdk.java.net/install/)
-- [openjdk SDK](http://openjdk.java.net/install/)
+- [Java >= 1.8](http://openjdk.java.net/install/)
+- [Java SDK](http://openjdk.java.net/install/)
+
 
 
 # Compile

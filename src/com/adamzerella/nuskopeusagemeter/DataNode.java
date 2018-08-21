@@ -12,23 +12,23 @@ import java.util.Scanner;
  * @version 1.0.0
  */
 public class DataNode {
-	String URLStream			= 	"";
-	String token 				= 	"";
-	String webPage 				= 	"";
-	String planName 			= 	"";
+	String URLStream 			= "";
+	String token 				= "";
+	String webPage 				= "";
+	String planName 			= "";
 
-	int downSpeed 				= 	0;
-	int upSpeed 				= 	0;
-	int planQuotaGB 			= 	0;
-	int lastResetDateYear 		= 	0;
-	int lastResetDateMonth 		= 	0;
-	int lastResetDateDay 		=	0;
+	int downSpeed 				= 0;
+	int upSpeed 				= 0;
+	int planQuotaGB 			= 0;
+	int lastResetDateYear 		= 0;
+	int lastResetDateMonth 		= 0;
+	int lastResetDateDay 		= 0;
 
-	float downloadsToDate 		= 	0;
-	float uploadsToDate 		= 	0;
+	float downloadsToDate 		= 0;
+	float uploadsToDate 		= 0;
 
-	Calendar lastResetDate		= 	null;
-	URL nuskopeURL				=	null;
+	Calendar lastResetDate 		= null;
+	URL nuskopeURL 				= null;
 
 	/**
 	 * Implicit default constructor
@@ -42,7 +42,7 @@ public class DataNode {
 	DataNode(String token) {
 		if (token.isEmpty()) throw new NullPointerException("Token is empty?");
 
-		this.webPage = "http://api.nuskope.com.au/usage/?Token=";
+		this.webPage = "https://api.nuskope.com.au/usage/?Token=";
 		this.lastResetDate = new GregorianCalendar();
 		this.token = token;	
 		this.webPage = this.webPage + this.token; //append token to end of URL
@@ -60,8 +60,6 @@ public class DataNode {
 		} catch (Exception ex){
 			System.err.println(ex.getMessage());
 		} 
-
-		//printNode(); // <--- DEBUGGING 
 	}
 
 	/**
@@ -84,7 +82,6 @@ public class DataNode {
 		String planQuotaGB 		= 	"";
 		String downloadsToDate 	= 	"";
 		String uploadsToDate 	= 	"";
-		//DecimalFormat df 		= 	new DecimalFormat("0.00"); //Used for download/uploadToDate
 
 		planName = URLStream.replaceAll(".*PlanName\"\\:\"", "");
 		planName = planName.replaceAll(" \\d.*", "");
@@ -144,30 +141,4 @@ public class DataNode {
 		return true;
 	}
 
-	/**
-	 * Method used for console debugging, prints information
-	 */
-	public void printNode(){ //Debugging 
-		System.out.println("\n" + "=======================================");
-		System.out.println("NuSkope User DataNode");
-		System.out.println("=======================================" + "\n");
-		System.out.println("Plan Details");
-		System.out.println("---------------------------------------");
-		System.out.println("Plan Type: " + "\t"+"\t"+	planName); 
-		System.out.println("Download Speed: " +"\t"+	downSpeed + "  Mb/s");
-		System.out.println("Upload Speed: " +"\t"+"\t"+ upSpeed   + "  Mb/s");
-		System.out.println("Plan Quota: " +"\t"+"\t"+ 	planQuotaGB + "GB");
-		System.out.println("Valid Token?" + "\t"+"\t" + isValid());
-		System.out.println("---------------------------------------"+"\n");
-		System.out.println("Quota Remaining");
-		System.out.println("---------------------------------------");
-		System.out.println("Last Reset Date: " 
-				+ "\t" + lastResetDate.get(Calendar.DAY_OF_MONTH) 
-				+ "-" +	lastResetDate.get(Calendar.MONTH) 
-				+ "-" + lastResetDate.get(Calendar.YEAR));	
-		System.out.println("Download Quota Used: " +"\t"+ downloadsToDate + "  GB");
-		System.out.println("Upload Quota Used: " +"\t"+ uploadsToDate + "  GB");
-		System.out.println("=======================================" + "\n");
-	}
-	
 }
