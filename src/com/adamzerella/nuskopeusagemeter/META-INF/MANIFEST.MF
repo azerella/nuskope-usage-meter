@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Name: Nuskope Usage Meter
+Main-Class: com.adamzerella.nuskopeusagemeter.Main
